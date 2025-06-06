@@ -5,7 +5,7 @@
 1️⃣ Клонируйте репозиторий:
 
 bash
-git clone https://github.com/Daniel6xx9/Danil3ISiP-A.git
+git clone [https://github.com/Daniel6xx9/Danil3ISiP-A.git](https://github.com/Daniel6xx9/Danil3ISiP-Anamefilm-catalog.git)
 2️⃣ Откройте index.html в браузере для просмотра каталога.
 
 🔹 Функционал:

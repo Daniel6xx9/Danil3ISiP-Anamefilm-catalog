@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог фильмов с AJAX и jQuery</title>
+
+    <!-- Подключаем jQuery для работы с DOM и AJAX -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* Стили для контейнера */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* Поля ввода и кнопки */
+        input, button, select {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 8px;
+        }
+
+        /* Блоки фильмов */
+        .film {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        /* Иконка "Избранное" */
+        .favorite {
+            color: red;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Каталог фильмов</h2>
+
+    <!-- Поле для поиска фильма -->
+    <input type="text" id="search" placeholder="Введите название фильма">
+
+    <!-- Фильтр по жанру -->
+    <select id="genreFilter">
+        <option value="">Все жанры</option>
+        <option value="Action">Боевик</option>
+        <option value="Comedy">Комедия</option>
+        <option value="Drama">Драма</option>
+    </select>
+
+    <!-- Контейнер для списка фильмов -->
+    <div id="filmList"></div>
+
+    <script>
+        $(document).ready(function() {
+            // 1. Создаем массив фильмов (демо-данные)
+            let films = [
+                { id: 1, title: "Матрица", genre: "Action" },
+                { id: 2, title: "Титаник", genre: "Drama" },
+                { id: 3, title: "Джентльмены", genre: "Comedy" },
+                { id: 4, title: "Тёмный рыцарь", genre: "Action" },
+                { id: 5, title: "Интерстеллар", genre: "Drama" },
+                { id: 6, title: "1+1", genre: "Comedy" }
+            ];
+
+            // 2. Сохраняем фильмы в LocalStorage для использования при фильтрации и поиске
+            localStorage.setItem("films", JSON.stringify(films));
+
+            // 3. Вызываем функцию рендера списка фильмов
+            renderFilms(films);
+
+            // 4. Функция рендера списка фильмов
+            function renderFilms(films) {
+                $("#filmList").empty(); // Очищаем контейнер перед обновлением
+
+                films.forEach(film => { // Проходим по каждому фильму
+                    $("#filmList").append(`
+                        <div class="film">
+                            <strong>${film.title}</strong> (${film.genre})
+                            <span class="favorite" data-id="${film.id}">⭐ Добавить в избранное</span>
+                        </div>
+                    `);
+                });
+            }
+
+            // 5. Фильтрация по жанру
+            $("#genreFilter").change(function() {
+                let selectedGenre = $(this).val(); // Получаем выбранный жанр
+                let films = JSON.parse(localStorage.getItem("films")) || []; // Загружаем фильмы из LocalStorage
+                let filteredFilms = selectedGenre ? films.filter(film => film.genre === selectedGenre) : films; // Фильтруем по жанру
+                renderFilms(filteredFilms); // Отображаем отфильтрованный список
+            });
+
+            // 6. Поиск фильмов
+            $("#search").on("input", function() {
+                let searchText = $(this).val().toLowerCase(); // Получаем текст из поля поиска
+                let films = JSON.parse(localStorage.getItem("films")) || []; // Загружаем фильмы из LocalStorage
+                let filteredFilms = films.filter(film => film.title.toLowerCase().includes(searchText)); // Фильтруем фильмы по названию
+                renderFilms(filteredFilms); // Обновляем отображение списка фильмов
+            });
+
+            // 7. Добавление фильма в избранное
+            $(document).on("click", ".favorite", function() {
+                let filmId = $(this).data("id"); // Получаем ID фильма
+                alert(`Фильм с ID ${filmId} добавлен в избранное!`); // Показываем уведомление
+            });
+        });
+    </script>
+
+</body>
+</html>
